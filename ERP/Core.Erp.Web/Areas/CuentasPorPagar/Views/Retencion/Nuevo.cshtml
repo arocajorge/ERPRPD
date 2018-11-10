@@ -1,0 +1,233 @@
+﻿@model Core.Erp.Info.CuentasPorPagar.cp_retencion_Info
+@{
+    ViewBag.Title = "Nueva retención";
+    if (Session["IdUsuario"] == null || Session["IdEmpresa"] == null)
+    {
+        Response.Redirect("~/Account/Login");
+    }
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    if (ViewBag.mensaje != null)
+    {
+        <div class="alert alert-warning alert-dismissible">
+            <h4>
+                <i class="icon fa fa-warning"></i> @ViewBag.mensaje
+            </h4>
+        </div>
+    }
+}
+<script src="~/Scripts/ValidacionBotonSubmit.js"></script>
+
+@using (Html.BeginForm("Nuevo", "Retencion", FormMethod.Post, new { @class = "form", @role = "form" }))
+{
+    @Html.HiddenFor(q => q.IdTransaccionSession, new { @id = "IdTransaccionSession" })
+    @Html.HiddenFor(q => q.IdEmpresa)
+    @Html.HiddenFor(q => q.IdProveedor, new { @id = "IdProveedor" })
+    @Html.HiddenFor(q => q.IdRetencion)
+    @Html.HiddenFor(q => q.IdTipoCbte_Ogiro)
+    @Html.HiddenFor(q => q.IdCbteCble_Ogiro)
+    @Html.HiddenFor(q => q.co_serie)
+    @Html.HiddenFor(q => q.co_factura)
+    @Html.HiddenFor(q => q.co_valoriva)
+    @Html.HiddenFor(q => q.co_subtotal_iva)
+    @Html.HiddenFor(q => q.co_subtotal_siniva)
+    @Html.HiddenFor(q => q.co_baseImponible)
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="co_observacion">Proveedor*</label>
+                    @Html.TextBoxFor(q => q.pe_razonSocial, new { @class = "form-control", @id = "pe_razonSocial", @disabled = "disabled" })
+                    @Html.ValidationMessageFor(q => q.pe_razonSocial, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="IdOrden_giro_Tipo">Tipo documento*</label>
+                    @Html.TextBoxFor(q => q.Descripcion, new { @class = "form-control", @id = "Descripcion", @disabled = "disabled" })
+                    @Html.ValidationMessageFor(q => q.Descripcion, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="co_serie">Serie*</label>
+                    @Html.TextBoxFor(q => q.co_serie, new { @class = "form-control", @disabled = "disabled" })
+                    @Html.ValidationMessageFor(q => q.co_serie, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="co_factura">Numero documento*</label>
+                    @Html.TextBoxFor(q => q.co_factura, new { @class = "form-control", @disabled = "disabled" })
+                    @Html.ValidationMessageFor(q => q.co_factura, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="co_subtotal_iva">Base IVA</label>
+                    @Html.TextBoxFor(q => q.co_subtotal_iva, new { @class = "form-control", @id = "co_subtotal_iva", @disabled = "disabled" })
+                    @Html.ValidationMessageFor(q => q.co_subtotal_iva, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="co_subtotal_siniva">Base cero</label>
+                    @Html.TextBoxFor(q => q.co_subtotal_siniva, new { @class = "form-control", @id = "co_subtotal_siniva", @disabled = "disabled" })
+                    @Html.ValidationMessageFor(q => q.co_subtotal_siniva, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="co_valoriva">Iva</label>
+                    @Html.TextBoxFor(q => q.co_valoriva, new { @class = "form-control", @id = "co_valoriva", @disabled = "disabled" })
+                    @Html.ValidationMessageFor(q => q.co_valoriva, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="co_total">Total</label>
+                    @Html.TextBoxFor(q => q.co_baseImponible, new { @class = "form-control", @id = "co_baseImponible", @disabled = "disabled" })
+                    @Html.ValidationMessageFor(q => q.co_baseImponible, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label for="co_total">Estb.</label>
+                    @Html.TextBoxFor(q => q.serie1, new { @class = "form-control", @id = "serie1" })
+                    @Html.ValidationMessageFor(q => q.co_baseImponible, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label for="co_total">Pto.</label>
+                    @Html.TextBoxFor(q => q.serie2, new { @class = "form-control", @id = "serie2" })
+                    @Html.ValidationMessageFor(q => q.co_baseImponible, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="co_total"># Retención</label>
+                    @Html.TextBoxFor(q => q.NumRetencion, new { @class = "form-control", @id = "NumRetencion" })
+                    @Html.ValidationMessageFor(q => q.co_baseImponible, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-10">
+                <div class="form-group">
+                    <label for="co_observacion">Observación*</label>
+                    @Html.TextBoxFor(q => q.observacion, new { @class = "form-control", @id = "observacion" })
+                    @Html.ValidationMessageFor(q => q.observacion, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="Fecha">Fecha retencion*</label>
+                    <div class="input-group date">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        @Html.DevExpress().DateEditFor(q=> q.fecha, settings =>
+                    {
+                        settings.Name = "fecha";
+                        settings.Properties.UseMaskBehavior = true;
+                        settings.Properties.EditFormat = EditFormat.Date;
+                        settings.Properties.EditFormatString = "dd/MM/yyyy";
+                        settings.Properties.TimeSectionProperties.TimeEditProperties.EditFormat = EditFormat.Date;
+                        settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                    }).GetHtml()
+                        @Html.ValidationMessageFor(q => q.fecha, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="Tabs" role="tabpanel">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="active">
+                <a href="#tab_detalle" aria-controls="detalle" role="tab" data-toggle="tab">Detalle retención</a>
+            </li>
+            <li>
+                <a href="#tab_diario_contable" aria-controls="diario_contable" role="tab" data-toggle="tab">Diario contable</a>
+            </li>
+
+        </ul>
+        <div class="tab-content" style="padding-top: 20px">
+            <div role="tabpanel" class="tab-pane active" style="margin-left: 1em;" id="tab_detalle">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="co_observacion">Detalle retención*</label>
+                                @Html.Action("GridViewPartial_retencion_det")
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" style="margin-left: 1em;" id="tab_diario_contable">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="co_observacion">Diario contable*</label>
+
+                                @Html.Action("GridViewPartial_retencio_dc")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="box-footer">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a class="btn btn-default" href="@Url.Action("Index","Retencion",new { Area = "CuentasPorPagar" },null)">Cancelar</a>
+    </div>
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+}
+<script>
+            function armar_diario() {
+
+                var datos = {
+                    IdProveedor: $("#IdProveedor").val(),
+                    IdTransaccionSession: $("#IdTransaccionSession").val()
+                }
+                $.ajax({
+                    type: 'POST',
+                    data: JSON.stringify(datos),
+                    url: '@Url.Action("armar_diario", "Retencion", new { Area = "CuentasPorPagar" })',
+                    async: false,
+                    bDeferRender: true,
+                    bProcessing: true,
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        GridViewPartial_retencio_dc.PerformCallback();
+                    },
+                    error: function (error) {
+                    }
+                });
+
+            };
+</script>

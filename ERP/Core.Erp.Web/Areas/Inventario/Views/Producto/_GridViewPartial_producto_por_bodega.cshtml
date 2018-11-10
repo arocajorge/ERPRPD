@@ -1,0 +1,77 @@
+@using System.Web.UI.WebControls;
+@model Core.Erp.Info.Inventario.in_Producto_Info
+@{
+    var grid = Html.DevExpress().GridView(settings => {
+        settings.Name = "GridViewPartial_producto_por_bodega";
+        settings.CallbackRouteValues = new { Controller = "Producto", Action = "GridViewPartial_producto_por_bodega", IdProducto = Model == null ? 0 : Model.IdProducto };
+        settings.KeyFieldName = "Secuencia  ";
+        settings.Width = Unit.Percentage(100);
+        settings.SettingsEditing.AddNewRowRouteValues = new { Controller = "Producto", Action = "EditingAddNew_pro_x_bod" };
+        settings.SettingsEditing.UpdateRowRouteValues = new { Controller = "Producto", Action = "EditingUpdate_pro_x_bod" };
+        settings.SettingsEditing.DeleteRowRouteValues = new { Controller = "Producto", Action = "EditingDelete_pro_x_bod" };
+        settings.SettingsEditing.Mode = GridViewEditingMode.EditFormAndDisplayRow;
+        settings.SettingsBehavior.ConfirmDelete = true;
+
+        settings.CommandColumn.Visible = true;
+        settings.CommandColumn.ShowNewButton = true;
+        settings.CommandColumn.ShowDeleteButton = true;
+        settings.CommandColumn.ShowEditButton = true;
+
+        settings.SettingsContextMenu.Enabled = true;
+        settings.SettingsBehavior.EnableCustomizationWindow = true;
+
+        settings.SettingsPager.Visible = true;
+        settings.Settings.ShowGroupPanel = false;
+        settings.SettingsBehavior.AllowSelectByRowClick = true;
+
+        //Configuracion responsive
+        settings.SettingsAdaptivity.AdaptivityMode = GridViewAdaptivityMode.HideDataCellsWindowLimit;
+        settings.SettingsAdaptivity.AdaptiveColumnPosition = GridViewAdaptiveColumnPosition.Right;
+        settings.SettingsAdaptivity.AdaptiveDetailColumnCount = 1;
+        settings.SettingsAdaptivity.AllowOnlyOneAdaptiveDetailExpanded = false;
+        settings.SettingsAdaptivity.HideDataCellsAtWindowInnerWidth = 500;
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "IdSucursal";
+            column.Caption = "Sucursal";
+            column.Width = Unit.Percentage(35);
+            column.EditorProperties().ComboBox(p =>
+            {
+                p.Columns.Add("IdSucursal", "ID").Width = Unit.Percentage(20);
+                p.Columns.Add("Su_Descripcion", "Sucursal").Width = Unit.Percentage(70);
+                p.ValueField = "IdSucursal";
+                p.ValueType = typeof(int);
+                p.DataSource = ViewBag.lst_susucrsal;
+                p.Width = Unit.Percentage(100);
+            });
+        });
+
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "IdBodega";
+            column.Caption = "Bodega";
+            column.Width = Unit.Percentage(35);
+            column.EditorProperties().ComboBox(p =>
+            {
+                p.Columns.Add("IdBodega", "ID").Width = Unit.Percentage(20);
+                p.Columns.Add("bo_Descripcion", "Bodega").Width = Unit.Percentage(70);
+                p.ValueField = "IdBodega";
+                p.ValueType = typeof(int);
+                p.DataSource = ViewBag.lst_bodega;
+                p.Width = Unit.Percentage(100);
+            });
+        });
+        settings.Columns.Add(column =>
+        {
+            column.FieldName = "Stock_minimo";
+            column.Caption = "Stock minimo";
+            column.Width = Unit.Percentage(15);
+
+        });
+    });
+    if (ViewData["EditError"] != null){
+        grid.SetEditErrorText((string)ViewData["EditError"]);
+    }
+}
+@grid.Bind(Model.lst_producto_x_bodega).GetHtml()

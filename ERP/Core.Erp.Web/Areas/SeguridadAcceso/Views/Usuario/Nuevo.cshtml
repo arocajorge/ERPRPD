@@ -1,0 +1,160 @@
+﻿@model Core.Erp.Info.SeguridadAcceso.seg_usuario_Info
+@{
+    ViewBag.Title = "Nuevo usuario";
+    if (Session["IdUsuario"] == null || Session["IdEmpresa"] == null)
+    {
+        Response.Redirect("~/Account/Login");
+    }
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/ValidacionBotonSubmit.js"></script>
+
+
+<script>
+    $(function () {
+        $("#div_admin").hide();
+    })
+</script>
+
+@using (Html.BeginForm("Nuevo", "Usuario", FormMethod.Post, new { @class = "form", @role = "form" }))
+{
+    if (ViewBag.mensaje != null)
+    {
+        <div class="alert alert-warning alert-dismissible">
+            <h4>
+                <i class="icon fa fa-warning"></i> @ViewBag.mensaje
+            </h4>
+        </div>
+
+    }
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="IdUsuario">Usuario*</label>
+                    @Html.TextBoxFor(q => q.IdUsuario, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(q => q.IdUsuario, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="">Contraseña</label>
+                    @Html.TextBoxFor(q => q.Contrasena, new { @class = "form-control", @id = "contrasenia_usuario" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="Nombre">Nombre</label>
+                    @Html.TextBoxFor(q => q.Nombre, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-9">
+                <div class="form-group" id="div_admin">
+                    <label for="contrasena_admin">Contraseña Administrador</label>
+                    @Html.PasswordFor(q => q.contrasena_admin, new { @class = "form-control", @id = "contrasena_admin" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label for="es_super_admin">@Html.CheckBoxFor(q => q.es_super_admin, new { @id = "es_super_admin" }) ¿Es usuario Administrador?</label>
+                    </div>
+                    <div class="checkbox">
+                        <label for="ExigirDirectivaContrasenia">@Html.CheckBoxFor(q => q.ExigirDirectivaContrasenia) Exigir directivas de contraseña</label>
+                    </div>
+                    <div class="checkbox">
+                        <label for="CambiarContraseniaSgtSesion">@Html.CheckBoxFor(q => q.CambiarContraseniaSgtSesion) Cambiar contraseña el próximo inicio de sesión</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="IdMenu">Menú inicio de sesión</label>
+                    @Html.DropDownListFor(q => q.IdMenu, new SelectList(ViewBag.lst_menu, "IdMenu", "DescripcionMenu_combo", Model.IdMenu == null ? 0 : Model.IdMenu), new { @class = "form-control" })
+                    @Html.ValidationMessageFor(q => q.IdMenu, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <table class="table table-bordered table-striped dataTable" role="grid">
+            <thead>
+                <tr role="row">
+                    <td width="10%"><strong>*</strong></td>
+                    <td width="90%"><strong>Empresa</strong></td>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    string clase = "";
+                    for (int i = 0; i < Model.lst_usuario_x_empresa.Count; i++)
+                    {
+                        if (i % 2 == 0)
+                        {
+                            clase = "even";
+                        }
+                        else
+                        {
+                            clase = "odd";
+                        }
+                        <tr role="row" class=@clase>
+                            @Html.HiddenFor(q => q.lst_usuario_x_empresa[i].em_nombre)
+                            @Html.HiddenFor(q => q.lst_usuario_x_empresa[i].IdEmpresa)
+                            <td>
+                                @Html.CheckBoxFor(q => q.lst_usuario_x_empresa[i].seleccionado, new { @checked = "checked" })
+                            </td>
+                            <td>
+                                @Model.lst_usuario_x_empresa[i].em_nombre
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="box-footer">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a class="btn btn-default" href="@Url.Action("Index","Usuario",new { Area = "SeguridadAcceso" },null)">Cancelar</a>
+    </div>
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+                    }
+
+<script>
+
+    $("#es_super_admin").change(function () {
+
+        if ($("#es_super_admin").is(":checked")) {
+            $("#div_admin").show();
+        } else
+            $("#div_admin").hide();
+    });
+
+
+    $(function () {
+        $("#div_admin").hide();
+    })
+</script>

@@ -1,0 +1,15 @@
+﻿
+@{
+    ViewBag.Title = "Proyeccioón de gastos personales";
+    if (Session["IdUsuario"] == null || Session["IdEmpresa"] == null)
+    {
+        Response.Redirect("~/Account/Login");
+    }
+    Layout = "~/Views/Layout/_LayoutConsulta.cshtml";
+}
+<script src="~/Scripts/ValidacionBotonSubmit.js"></script>
+
+@using (Html.BeginForm())
+{
+    @Html.Action("GridViewPartial_proyeccion_gastos")
+}

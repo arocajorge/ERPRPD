@@ -9254,10 +9254,7 @@
     <Content Include="Areas\CuentasPorPagar\Views\Deudas\_CmbFlujo_Deudas.cshtml" />
     <Content Include="Areas\CuentasPorPagar\Views\Proveedor\_CmbBanco_Proveedor.cshtml" />
     <None Include="Properties\PublishProfiles\Erp_web.pubxml" />
-    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
-    <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
-    <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />
-    <None Include="Properties\PublishProfiles\FolderProfile3.pubxml" />
+    <None Include="Properties\PublishProfiles\p1.pubxml" />
     <None Include="Properties\PublishProfiles\web.pubxml" />
     <None Include="Properties\PublishProfiles\WEBRAPI.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />

@@ -335,6 +335,7 @@ namespace Core.Erp.Data.Facturacion
                 {
                     
                     in_Ing_Egr_Inven_Info movimiento = armar_movi_inven(info, Convert.ToInt32(parametro.IdMovi_inven_tipo_Factura),contacto == null ? "" : contacto.Nombres);
+                    if(movimiento != null)
                     if(data_inv.guardarDB(movimiento, "-"))
                     {
                         db_f.fa_factura_x_in_Ing_Egr_Inven.Add(new fa_factura_x_in_Ing_Egr_Inven

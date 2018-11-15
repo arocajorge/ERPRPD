@@ -95,7 +95,7 @@
 
     function MostrarModal() {
         GridView_LoteFactura.PerformCallback();
-        $("#OpModal").modal("show");
+        $("#OpModal").modal({ backdrop: 'static' });
     }
     function MostrarModalDesbloqueo() {
         $("#ContraseniaAdministrador").val("");
@@ -148,7 +148,7 @@
                     $("#Secuencia").text(data.Secuencia);
                     $("#txtPrecio").val(data.vt_Precio);
                     $("#txtPorDescuento").val(data.vt_PorDescUnitario);
-                    $("#ModalPrecios").modal("show");
+                    $("#ModalPrecios").modal({ backdrop: 'static' });
                 },
                 error: function (error) {
                 }

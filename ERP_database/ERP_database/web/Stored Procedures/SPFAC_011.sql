@@ -54,7 +54,7 @@ FROM (
 							 cxc_cobro ON cxc_cobro_det.IdEmpresa = cxc_cobro.IdEmpresa AND cxc_cobro_det.IdSucursal = cxc_cobro.IdSucursal AND cxc_cobro_det.IdCobro = cxc_cobro.IdCobro ON fa_cliente.IdEmpresa = cxc_cobro.IdEmpresa AND 
 							 fa_cliente.IdCliente = cxc_cobro.IdCliente
 	WHERE cxc_cobro.IdEmpresa = @IdEmpresa and cxc_cobro.IdCliente between @IdClienteIni and @IdClienteFin and cxc_cobro.cr_fecha < @FechaIni  and cxc_cobro.cr_estado = 'A'
-	and cxc_cobro_tipo.IdMotivo_tipo_cobro <> 'NTCR'
+	and ISNULL(cxc_cobro_tipo.IdMotivo_tipo_cobro,'') <> 'NTCR'
 	) A
 	group by A.IdEmpresa, A.IdCliente, A.pe_nombreCompleto, A.Fecha, A.Estado
 	
@@ -101,6 +101,6 @@ UNION ALL
 							cxc_cobro ON cxc_cobro_det.IdEmpresa = cxc_cobro.IdEmpresa AND cxc_cobro_det.IdSucursal = cxc_cobro.IdSucursal AND cxc_cobro_det.IdCobro = cxc_cobro.IdCobro ON fa_cliente.IdEmpresa = cxc_cobro.IdEmpresa AND 
 							fa_cliente.IdCliente = cxc_cobro.IdCliente
 	WHERE cxc_cobro.IdEmpresa = @IdEmpresa and cxc_cobro.IdCliente between @IdClienteIni and @IdClienteFin and cxc_cobro.cr_fecha between @FechaIni and @FechaFin and cxc_cobro.cr_estado like '%'+case when @MostrarAnulados = 1 then '' else 'A' end+'%'
-	and cxc_cobro_tipo.IdMotivo_tipo_cobro <> 'NTCR'
+	and ISNULL(cxc_cobro_tipo.IdMotivo_tipo_cobro,'') <> 'NTCR'
 	) REP
 ORDER BY Rep.IdEmpresa, Rep.IdCliente, Rep.Fecha,Rep.Secuencia, Rep.Referencia, Rep.Debitos, REP.Creditos

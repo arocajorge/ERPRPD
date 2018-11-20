@@ -63,27 +63,6 @@
 );
 
 
+
+
 GO
-create  trigger dbo.trg_In_Producto 
-on dbo.in_producto
-after INSERT ,UPDATE,DELETE
-AS
-
-
-IF NOT EXISTS (
-			SELECT IdTabla 
-           FROM dbo.tb_sis_Actualizaciones_x_tablas
-           where IdTabla='in_Producto'
-          )  
-BEGIN  
-	INSERT INTO dbo.tb_sis_Actualizaciones_x_tablas
-	(IdTabla,ult_fecha_update,ult_proceso)
-	VALUES
-	('in_Producto',GETDATE(),'insert')
-END
-
-
-UPDATE dbo.tb_sis_Actualizaciones_x_tablas
-set ult_fecha_update=GETDATE()
-,ult_proceso=''
-where IdTabla='in_Producto'

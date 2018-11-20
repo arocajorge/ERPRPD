@@ -30,6 +30,8 @@
 
 
 
+
+
 GO
 CREATE NONCLUSTERED INDEX [IX_ct_plancta]
     ON [dbo].[ct_plancta]([IdEmpresa] ASC, [IdCtaCble] ASC);

@@ -10,3 +10,5 @@
     CONSTRAINT [FK_ct_grupocble_ct_grupocble_Mayor] FOREIGN KEY ([IdGrupo_Mayor]) REFERENCES [dbo].[ct_grupocble_Mayor] ([IdGrupo_Mayor])
 );
 
+
+

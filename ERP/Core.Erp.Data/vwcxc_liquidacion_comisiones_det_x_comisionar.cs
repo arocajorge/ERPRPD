@@ -38,5 +38,7 @@ namespace Core.Erp.Data
         public Nullable<double> SaldoPorComisionar { get; set; }
         public int IdVendedor { get; set; }
         public double PorComision { get; set; }
+        public double BaseComision { get; set; }
+        public double ValorRetenido { get; set; }
     }
 }

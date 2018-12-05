@@ -20,6 +20,7 @@ namespace Core.Erp.Web.Areas.CuentasPorCobrar.Controllers
         fa_Vendedor_Bus bus_vendedor = new fa_Vendedor_Bus();
         cxc_liquidacion_comisiones_det_Bus bus_det = new cxc_liquidacion_comisiones_det_Bus();
         cxc_liquidacion_det_List List_det = new cxc_liquidacion_det_List();
+        string mensaje = string.Empty;
         #endregion
         #region Index
         public ActionResult Index()
@@ -49,7 +50,18 @@ namespace Core.Erp.Web.Areas.CuentasPorCobrar.Controllers
             var lst_vendedor = bus_vendedor.get_list(IdEmpresa, false);
             ViewBag.lst_vendedor = lst_vendedor;
         }
+        private bool Validar(cxc_liquidacion_comisiones_Info i_Validar, ref string msg)
+        {
 
+            i_Validar.lst_det = List_det.get_list(i_Validar.IdTransaccionSession);
+            if (i_Validar.lst_det.Count == 0)
+            {
+                msg = "Debe ingresar un detalle de las comisiones";
+                return false;
+            }
+
+            return true;
+        }
         #endregion
         #region Acciones
 
@@ -66,8 +78,8 @@ namespace Core.Erp.Web.Areas.CuentasPorCobrar.Controllers
             {
                 IdEmpresa = IdEmpresa,
                 Fecha = DateTime.Now,
-                IdTransaccionSession = Convert.ToDecimal(SessionFixed.IdTransaccionSession)
-
+                IdTransaccionSession = Convert.ToDecimal(SessionFixed.IdTransaccionSession),
+                FechaCorte = DateTime.Now
             };
             List_det.set_list(model.lst_det, model.IdTransaccionSession);
             cargar_combos(IdEmpresa);
@@ -76,10 +88,18 @@ namespace Core.Erp.Web.Areas.CuentasPorCobrar.Controllers
         [HttpPost]
         public ActionResult Nuevo(cxc_liquidacion_comisiones_Info model)
         {
-            model.IdUsuario = Session["IdUsuario"].ToString();
+            model.IdUsuario = SessionFixed.IdUsuario;
             model.lst_det = List_det.get_list(model.IdTransaccionSession);
+            if (!Validar(model, ref mensaje))
+            {
+                SessionFixed.IdTransaccionSessionActual = model.IdTransaccionSession.ToString();
+                cargar_combos(model.IdEmpresa);
+                ViewBag.mensaje = mensaje;
+                return View(model);
+            }
             if (!bus_liq.guardarDB(model))
             {
+                SessionFixed.IdTransaccionSessionActual = model.IdTransaccionSession.ToString();
                 cargar_combos(model.IdEmpresa);
                 return View(model);
             }
@@ -108,11 +128,19 @@ namespace Core.Erp.Web.Areas.CuentasPorCobrar.Controllers
         [HttpPost]
         public ActionResult Modificar(cxc_liquidacion_comisiones_Info model)
         {
-            model.IdUsuarioUltMod = Session["IdUsuario"].ToString();
+            model.IdUsuarioUltMod = SessionFixed.IdUsuario;
             model.lst_det = List_det.get_list(model.IdTransaccionSession);
 
+            if (!Validar(model, ref mensaje))
+            {
+                SessionFixed.IdTransaccionSessionActual = model.IdTransaccionSession.ToString();
+                cargar_combos(model.IdEmpresa);
+                ViewBag.mensaje = mensaje;
+                return View(model);
+            }
             if (!bus_liq.modificarDB(model))
             {
+                SessionFixed.IdTransaccionSessionActual = model.IdTransaccionSession.ToString();
                 cargar_combos(model.IdEmpresa);
                 return View(model);
             }
@@ -169,9 +197,9 @@ namespace Core.Erp.Web.Areas.CuentasPorCobrar.Controllers
 
         #endregion
 
-        public JsonResult get_list_x_liquidar(int IdEmpresa = 0 , decimal IdTransaccionSession = 0, int IdVendedor = 0)
+        public JsonResult get_list_x_liquidar(DateTime? FechaCorte, int IdEmpresa = 0 , decimal IdTransaccionSession = 0, int IdVendedor = 0)
         {
-            var resultado = bus_det.get_list_x_liquidar(IdEmpresa, IdVendedor);
+            var resultado = bus_det.get_list_x_liquidar(IdEmpresa, IdVendedor, FechaCorte == null ? DateTime.Now : Convert.ToDateTime(FechaCorte));
             List_det.set_list(resultado, IdTransaccionSession);
             return Json(resultado, JsonRequestBehavior.AllowGet);
                 
@@ -202,9 +230,9 @@ namespace Core.Erp.Web.Areas.CuentasPorCobrar.Controllers
             cxc_liquidacion_comisiones_det_Info edited_info = get_list(IdTransaccionSession).Where(m => m.Secuencia == info_det.Secuencia).First();
             edited_info.BaseComision = info_det.BaseComision;
             edited_info.PorcentajeComision = info_det.PorcentajeComision;
-            edited_info.TotalAComisionar = info_det.TotalAComisionar;
-            edited_info.TotalComisionado = info_det.TotalComisionado;
-            edited_info.TotalLiquidacion = info_det.TotalLiquidacion;
+            edited_info.TotalAComisionar = Math.Round(info_det.BaseComision * (info_det.PorcentajeComision/100),2,MidpointRounding.AwayFromZero);
+            //edited_info.TotalComisionado = info_det.TotalComisionado;
+            edited_info.TotalLiquidacion = Math.Round(edited_info.TotalAComisionar - edited_info.TotalComisionado,2,MidpointRounding.AwayFromZero);
             edited_info.NoComisiona = info_det.NoComisiona;
 
         }

@@ -116,6 +116,7 @@
             column.FieldName = "TotalAComisionar";
             column.Caption = "Comisión total";
             column.PropertiesEdit.DisplayFormatString = "{0:N2}";
+            column.EditFormSettings.Visible = DefaultBoolean.False;
             column.EditorProperties().SpinEdit(p =>
             {
                 p.MinValue = 0;
@@ -148,6 +149,7 @@
             column.FieldName = "TotalLiquidacion";
             column.Caption = "V. Liquidar";
             column.PropertiesEdit.DisplayFormatString = "{0:N2}";
+            column.EditFormSettings.Visible = DefaultBoolean.False;
             column.EditorProperties().SpinEdit(p =>
             {
                 p.MinValue = 0;
@@ -168,7 +170,7 @@
         });
 
         settings.ClientSideEvents.BeginCallback = "function(s, e) { e.customArgs['TransaccionFixed'] = $('#IdTransaccionSession').val(); }";
-
+        settings.TotalSummary.Add(DevExpress.Data.SummaryItemType.Sum, "TotalLiquidacion").DisplayFormat = " {0:n2}";
     });
 }
 @grid.Bind(Model).GetHtml()

@@ -56,16 +56,18 @@ namespace Core.Erp.Data.CuentasPorCobrar
             }
         }
 
-        public List<cxc_liquidacion_comisiones_det_Info> get_list_x_liquidar(int IdEmpresa, int IdVendedor)
+        public List<cxc_liquidacion_comisiones_det_Info> get_list_x_liquidar(int IdEmpresa, int IdVendedor, DateTime FechaCorte)
         {
             try
             {
+                FechaCorte = FechaCorte.Date;
                 List<cxc_liquidacion_comisiones_det_Info> Lista;
                 using (Entities_cuentas_por_cobrar Context = new Entities_cuentas_por_cobrar())
                 {
                     Lista = (from q in Context.vwcxc_liquidacion_comisiones_det_x_comisionar
                              where q.IdEmpresa == IdEmpresa
                              && q.IdVendedor == IdVendedor
+                             && q.vt_fecha <= FechaCorte
                              select new cxc_liquidacion_comisiones_det_Info
                              {
                                  IdEmpresa = q.IdEmpresa,
@@ -75,10 +77,10 @@ namespace Core.Erp.Data.CuentasPorCobrar
                                  IvaFactura = q.vt_iva,
                                  TotalFactura = q.vt_total,
                                  TotalCobrado = q.valor_cobro,
-                                 BaseComision = q.vt_Subtotal,
+                                 BaseComision = q.BaseComision,
                                  TotalAComisionar = q.TotalAComisionar,
                                  TotalComisionado = q.TotalComisionado,
-                                 TotalLiquidacion = 0,
+                                 TotalLiquidacion = q.TotalAComisionar,
                                  NoComisiona = false,
                                  fa_IdBodega = q.IdBodega,
                                  fa_IdCbteVta = q.IdCbteVta,

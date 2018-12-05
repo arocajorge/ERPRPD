@@ -24,11 +24,11 @@ namespace Core.Erp.Bus.CuentasPorCobrar
             }
         }
 
-        public List<cxc_liquidacion_comisiones_det_Info> get_list_x_liquidar(int IdEmpresa, int IdVendedor)
+        public List<cxc_liquidacion_comisiones_det_Info> get_list_x_liquidar(int IdEmpresa, int IdVendedor, DateTime FechaCorte)
         {
             try
             {
-                return odata.get_list_x_liquidar(IdEmpresa, IdVendedor);
+                return odata.get_list_x_liquidar(IdEmpresa, IdVendedor, FechaCorte);
             }
             catch (Exception)
             {

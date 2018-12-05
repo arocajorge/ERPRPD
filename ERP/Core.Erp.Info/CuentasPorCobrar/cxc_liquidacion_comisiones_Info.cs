@@ -25,6 +25,9 @@ namespace Core.Erp.Info.CuentasPorCobrar
         public Nullable<System.DateTime> FechaUltAnu { get; set; }
         public string MotivoAnulacion { get; set; }
 
+        [Required(ErrorMessage = "El campo fecha corte es obligatorio")]
+        public System.DateTime FechaCorte { get; set; }
+
         // campos que no existen en la tabla
         public List<cxc_liquidacion_comisiones_det_Info> lst_det { get; set; }
 

@@ -37,7 +37,6 @@ namespace Core.Erp.Data
         public double PorComision { get; set; }
         public double SubtotalFactura { get; set; }
         public double IvaFactura { get; set; }
-        public int Expr1 { get; set; }
         public double TotalFactura { get; set; }
         public double TotalCobrado { get; set; }
         public double BaseComision { get; set; }

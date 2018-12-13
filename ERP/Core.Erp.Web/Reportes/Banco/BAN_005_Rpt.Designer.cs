@@ -62,7 +62,7 @@
             this.xrLabel4.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[cb_Valor]")});
             this.xrLabel4.Font = new System.Drawing.Font("Verdana", 8.5F);
-            this.xrLabel4.LocationFloat = new DevExpress.Utils.PointFloat(374.9167F, 54.95828F);
+            this.xrLabel4.LocationFloat = new DevExpress.Utils.PointFloat(374.9167F, 50F);
             this.xrLabel4.Name = "xrLabel4";
             this.xrLabel4.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel4.SizeF = new System.Drawing.SizeF(100F, 23F);
@@ -76,7 +76,7 @@
             this.xrLabel3.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[cb_giradoA]")});
             this.xrLabel3.Font = new System.Drawing.Font("Verdana", 8.5F);
-            this.xrLabel3.LocationFloat = new DevExpress.Utils.PointFloat(30.91669F, 54.95828F);
+            this.xrLabel3.LocationFloat = new DevExpress.Utils.PointFloat(30.91669F, 50F);
             this.xrLabel3.Name = "xrLabel3";
             this.xrLabel3.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel3.SizeF = new System.Drawing.SizeF(344F, 23F);
@@ -103,7 +103,7 @@
             this.xrLabel2.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel2.SizeF = new System.Drawing.SizeF(82.29167F, 23F);
             this.xrLabel2.StylePriority.UseFont = false;
-            this.xrLabel2.TextFormatString = "{0:dd-MM-yy}";
+            this.xrLabel2.TextFormatString = "{0:yyyy-MM-dd}";
             // 
             // xrLabel6
             // 
@@ -160,7 +160,7 @@
             this.objectDataSource1});
             this.DataSource = this.objectDataSource1;
             this.Font = new System.Drawing.Font("Verdana", 8F);
-            this.Margins = new System.Drawing.Printing.Margins(7, 275, 20, 36);
+            this.Margins = new System.Drawing.Printing.Margins(7, 274, 20, 36);
             this.PageHeight = 1169;
             this.PageWidth = 827;
             this.PaperKind = System.Drawing.Printing.PaperKind.A4;

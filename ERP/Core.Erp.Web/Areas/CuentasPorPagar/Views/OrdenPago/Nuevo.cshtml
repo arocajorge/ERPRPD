@@ -2,7 +2,7 @@
 
 @model Core.Erp.Info.CuentasPorPagar.cp_orden_pago_Info
 @{
-    ViewBag.Title = "Nueva orden";
+    ViewBag.Title = "Nueva orden de pago";
     if (Session["IdUsuario"] == null || Session["IdEmpresa"] == null)
     {
         Response.Redirect("~/Account/Login");
@@ -18,115 +18,82 @@
     }
 }
 <script src="~/Scripts/ValidacionBotonSubmit.js"></script>
+<script type="text/javascript">
+    $(function() {
+        $("#IdTipo_Persona").change(function () {
+            IdEntidad.SetValue(null);
+        });
+    });
+    var selectedIDs;
+    function OnBeginCallback(s, e) {
+        e.customArgs["IdTipo_Persona"] = $("#IdTipo_Persona").val();
+        e.customArgs["Entidad"] = IdEntidad.GetValue();
+        e.customArgs["selectedIDs"] = selectedIDs;
+    }
 
+    function CargarEstadoAprobacion() {
+        $("#IdEstado_op").empty();
+
+        var datos = {
+            IdEmpresa: $("#IdEmpresa").val(),
+            IdTipo_op: IdTipo_op.GetValue()
+        }
+
+        $.ajax({
+            type: 'POST',
+            data: JSON.stringify(datos),
+            url: '@Url.Action("CargarEstadoAprobacion", "OrdenPago", new { Area = "CuentasPorPagar" })',
+            async: false,
+            bDeferRender: true,
+            bProcessing: true,
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                $("#IdEstado_op").text(data.DescripcionAprobacion)
+            },
+            error: function (error) {
+            }
+        });
+    };
+</script>
 @using (Html.BeginForm("Nuevo", "OrdenPago", FormMethod.Post, new { @class = "form", @role = "form" }))
 {
-
     @Html.HiddenFor(q => q.IdEmpresa)
+    @Html.HiddenFor(q => q.IdEmpresa, new { @id = "IdEmpresa" })
     @Html.HiddenFor(q => q.IdOrdenPago)
+    @Html.HiddenFor(q => q.IdEstadoAprobacion)
+    @Html.HiddenFor(q => q.IdTransaccionSession, new { @id = "IdTransaccionSession" })
     <div class="row">
         <div class="col-md-12">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="IdSucursal">Tipo de persona*</label>
-                    @Html.DevExpress().ComboBoxFor(q => q.IdTipo_Persona, settings =>
-               {
-                   settings.Name = "IdTipo_Persona";
-                   settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
-                   settings.Properties.DisplayFormatString = "[{0}] - {1}";
-                   settings.Properties.Columns.Add("IdTipo_Persona", "ID").Width = System.Web.UI.WebControls.Unit.Percentage(20);
-                   settings.Properties.Columns.Add("Descricpion", "Descripción").Width = System.Web.UI.WebControls.Unit.Percentage(80);
-                   //Campo ID
-                   settings.Properties.ValueField = "IdTipo_Persona";
-                   settings.Properties.ValueType = typeof(string);
-                   settings.Properties.TextField = "Descricpion";
-                   //Boton para seleccionar ningun registro
-                   settings.Properties.ClearButton.DisplayMode = ClearButtonDisplayMode.Always;
-                   settings.Properties.DropDownStyle = DropDownStyle.DropDown;
-               }).BindList(ViewBag.lst_persona_tipo).GetHtml()
-                    @Html.ValidationMessageFor(q => q.IdTipo_Persona, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="col-md-6">
+            
+            <div class="col-md-4">
                 <div class="form-group">
                     <label for="IdTipo_op">Tipo orden pago*</label>
                     @Html.DevExpress().ComboBoxFor(q => q.IdTipo_op, settings =>
-               {
-                   settings.Name = "IdTipo_op";
-                   settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
-                   settings.Properties.DisplayFormatString = "[{0}] - {1}";
-                   settings.Properties.Columns.Add("IdTipo_op", "ID").Width = System.Web.UI.WebControls.Unit.Percentage(20);
-                   settings.Properties.Columns.Add("Descripcion", "Descripción").Width = System.Web.UI.WebControls.Unit.Percentage(80);
-                   //Campo ID
-                   settings.Properties.ValueField = "IdTipo_op";
-                   settings.Properties.ValueType = typeof(string);
-                   settings.Properties.TextField = "Descricpion";
-                   //Boton para seleccionar ningun registro
-                   settings.Properties.ClearButton.DisplayMode = ClearButtonDisplayMode.Always;
-                   settings.Properties.DropDownStyle = DropDownStyle.DropDown;
-
-               }).BindList(ViewBag.lst_tipo_orden_pago).GetHtml()
+                       {
+                           settings.Name = "IdTipo_op";
+                           settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                           settings.Properties.DisplayFormatString = "[{0}] - {1}";
+                           settings.Properties.Columns.Add("IdTipo_op", "ID").Width = System.Web.UI.WebControls.Unit.Percentage(20);
+                           settings.Properties.Columns.Add("Descripcion", "Descripción").Width = System.Web.UI.WebControls.Unit.Percentage(80);
+                           //Campo ID
+                           settings.Properties.ValueField = "IdTipo_op";
+                           settings.Properties.ValueType = typeof(string);
+                           settings.Properties.TextField = "Descricpion";
+                           //Boton para seleccionar ningun registro
+                           settings.Properties.ClearButton.DisplayMode = ClearButtonDisplayMode.Always;
+                           settings.Properties.DropDownStyle = DropDownStyle.DropDown;
+                           settings.Properties.ClientSideEvents.SelectedIndexChanged = "function(s,e){CargarEstadoAprobacion();}";
+                       }).BindList(ViewBag.lst_tipo_orden_pago).GetHtml()
                     @Html.ValidationMessageFor(q => q.IdTipo_op, "", new { @class = "text-danger" })
                 </div>
             </div>
-
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="col-md-12">
+            <div class="col-md-1">
                 <div class="form-group">
-                    <label for="IdProveedor">Beneficiario*</label>
-                    @Html.DevExpress().ComboBoxFor(q => q.IdEntidad, settings =>
-               {
-                   settings.Name = "IdEntidad";
-                   settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
-                   settings.Properties.DisplayFormatString = "[{0}] - {1}";
-                   settings.Properties.Columns.Add("IdProveedor", "ID").Width = System.Web.UI.WebControls.Unit.Percentage(10);
-                   settings.Properties.Columns.Add("info_persona.pe_nombreCompleto", "Proveedor").Width = System.Web.UI.WebControls.Unit.Percentage(80);
-                   settings.Properties.Columns.Add("info_persona.pe_cedulaRuc", "Cédula").Width = System.Web.UI.WebControls.Unit.Percentage(10);
-                   settings.Properties.CallbackPageSize = 10;
-                   //Campo ID
-                   settings.Properties.ValueField = "IdProveedor";
-                   settings.Properties.ValueType = typeof(int);
-                   settings.Properties.TextField = "info_persona.pe_nombreCompleto";
-                   //Boton para seleccionar ningun registro
-                   settings.Properties.ClearButton.DisplayMode = ClearButtonDisplayMode.Always;
-                   settings.Properties.DropDownStyle = DropDownStyle.DropDown;
-
-               }).BindList(ViewBag.lst_proveedores).GetHtml()
-                    @Html.ValidationMessageFor(q => q.IdEntidad, "", new { @class = "text-danger" })
+                    <label for="Estado">Estado</label><br />
+                    <label id="IdEstado_op" for="IdEstado_op" style="color:red;"></label>
                 </div>
             </div>
-
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="IdFormaPago">Forma de pago*</label>
-                    @Html.DevExpress().ComboBoxFor(q => q.IdFormaPago, settings =>
-               {
-                   settings.Name = "IdFormaPago";
-                   settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
-                   settings.Properties.DisplayFormatString = "[{0}] - {1}";
-                   settings.Properties.Columns.Add("IdFormaPago", "ID").Width = System.Web.UI.WebControls.Unit.Percentage(20);
-                   settings.Properties.Columns.Add("descripcion", "Descripción").Width = System.Web.UI.WebControls.Unit.Percentage(80);
-                   //Campo ID
-                   settings.Properties.ValueField = "IdFormaPago";
-                   settings.Properties.ValueType = typeof(string);
-                   settings.Properties.TextField = "Descripción";
-                   //Boton para seleccionar ningun registro
-                   settings.Properties.ClearButton.DisplayMode = ClearButtonDisplayMode.Always;
-                   settings.Properties.DropDownStyle = DropDownStyle.DropDown;
-
-               }).BindList(ViewBag.lst_forma_pago).GetHtml()
-                    @Html.ValidationMessageFor(q => q.IdFormaPago, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
             <div class="col-md-2">
                 <div class="form-group">
                     <label for="Fecha">Fecha*</label>
@@ -134,37 +101,73 @@
                         <div class="input-group-addon">
                             <i class="fa fa-calendar"></i>
                         </div>
-                        @Html.DevExpress().DateEditFor(q=> q.Fecha, settings =>
-                    {
-                        settings.Name = "Fecha";
-                        settings.Properties.UseMaskBehavior = true;
-                        settings.Properties.EditFormat = EditFormat.Date;
-                        settings.Properties.EditFormatString = "dd/MM/yyyy";
-                        settings.Properties.TimeSectionProperties.TimeEditProperties.EditFormat = EditFormat.Date;
-                        settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
-                    }).GetHtml()
+                        @Html.DevExpress().DateEditFor(q => q.Fecha, settings =>
+                        {
+                            settings.Name = "Fecha";
+                            settings.Properties.UseMaskBehavior = true;
+                            settings.Properties.EditFormat = EditFormat.Date;
+                            settings.Properties.EditFormatString = "dd/MM/yyyy";
+                            settings.Properties.TimeSectionProperties.TimeEditProperties.EditFormat = EditFormat.Date;
+                            settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
+                        }).GetHtml()
                         @Html.ValidationMessageFor(q => q.Fecha, "", new { @class = "text-danger" })
                     </div>
                 </div>
             </div>
-            <div class="col-md-2">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-3">
                 <div class="form-group">
-                    <label for="Fecha_Pago">Fecha pago*</label>
-                    <div class="input-group date">
-                        <div class="input-group-addon">
-                            <i class="fa fa-calendar"></i>
-                        </div>
-                        @Html.DevExpress().DateEditFor(q=> q.Fecha_Pago, settings =>
+                    <label for="IdTipo_Persona">Tipo persona:*</label>
+                    @Html.DropDownListFor(q => q.IdTipo_Persona, new SelectList(ViewBag.lst_tipo_personas, "Key", "Value"), new { @class = "form-control", @id = "IdTipo_Persona" })
+                    @Html.ValidationMessageFor(q => q.IdTipo_Persona, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="form-group">
+                    <label for="IdEntidad">Beneficiario:*</label>
+                    @Html.Partial("_CmbPersona_OP", Model.IdEntidad)
+                    @Html.ValidationMessageFor(q => q.IdEntidad, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            
+            <div class="col-md-9">
+                <div class="form-group">
+                    <label for="co_observacion">Observación*</label>
+                    @Html.TextBoxFor(q => q.Observacion, new { @class = "form-control", @id = "observacion" })
+                    @Html.ValidationMessageFor(q => q.Observacion, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="IdFormaPago">Forma de pago*</label>
+                    @Html.DevExpress().ComboBoxFor(q => q.IdFormaPago, settings =>
                     {
-                        settings.Name = "Fecha_Pago";
-                        settings.Properties.UseMaskBehavior = true;
-                        settings.Properties.EditFormat = EditFormat.Date;
-                        settings.Properties.EditFormatString = "dd/MM/yyyy";
-                        settings.Properties.TimeSectionProperties.TimeEditProperties.EditFormat = EditFormat.Date;
+                        settings.Name = "IdFormaPago";
                         settings.Width = System.Web.UI.WebControls.Unit.Percentage(100);
-                    }).GetHtml()
-                        @Html.ValidationMessageFor(q => q.Fecha_Pago, "", new { @class = "text-danger" })
-                    </div>
+                        settings.Properties.DisplayFormatString = "[{0}] - {1}";
+                        settings.Properties.Columns.Add("IdFormaPago", "ID").Width = System.Web.UI.WebControls.Unit.Percentage(20);
+                        settings.Properties.Columns.Add("descripcion", "Descripción").Width = System.Web.UI.WebControls.Unit.Percentage(80);
+                        //Campo ID
+                        settings.Properties.ValueField = "IdFormaPago";
+                        settings.Properties.ValueType = typeof(string);
+                        settings.Properties.TextField = "Descripción";
+                        //Boton para seleccionar ningun registro
+                        settings.Properties.ClearButton.DisplayMode = ClearButtonDisplayMode.Always;
+                        settings.Properties.DropDownStyle = DropDownStyle.DropDown;
+
+                    }).BindList(ViewBag.lst_forma_pago).GetHtml()
+                    @Html.ValidationMessageFor(q => q.IdFormaPago, "", new { @class = "text-danger" })
                 </div>
             </div>
             <div class="col-md-2">
@@ -172,17 +175,6 @@
                     <label for="Fecha_PriPago">Valor a cancelar*</label>
                     @Html.TextBoxFor(q => q.Valor_a_pagar, new { @class = "form-control", @id = "Valor_a_pagar" })
                     @Html.ValidationMessageFor(q => q.Valor_a_pagar, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label for="co_observacion">Observación*</label>
-                    @Html.TextBoxFor(q => q.Observacion, new { @class = "form-control", @id = "observacion" })
-                    @Html.ValidationMessageFor(q => q.Observacion, "", new { @class = "text-danger" })
                 </div>
             </div>
         </div>
@@ -205,7 +197,7 @@
                     <div class="col-md-12">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label for="co_observacion">Detalle de deudad a cancelar</label>
+                                <label for="co_observacion">Detalle de deuda a cancelar</label>
                                 @Html.Action("GridViewPartial_detalle_op")
                             </div>
                         </div>
@@ -232,48 +224,47 @@
         <a class="btn btn-default" href="@Url.Action("Index","OrdenPago",new { Area = "CuentasPorPagar" },null)">Cancelar</a>
     </div>
 
-
-
-
-    @section Scripts {
+    @section Scripts
+    {
         @Scripts.Render("~/bundles/jqueryval")
     }
 }
+
 <script>
 
-            $("#Valor_a_pagar").keyup(function () {
-                armar_diario();
-            });
-
-            function armar_diario() {
-
-                var datos = {
-                    IdTipo_op: IdTipo_op.GetValue(),
-                    IdEntidad: IdEntidad.GetValue(),
-                    Valor_a_pagar: $("#Valor_a_pagar").val(),
-                    observacion: $("#observacion").val()
-
-
-                }
-                $.ajax({
-                    type: 'POST',
-                    data: JSON.stringify(datos),
-                    url: '@Url.Action("armar_diario", "OrdenPago", new { Area = "CuentasPorPagar" })',
-                    async: false,
-                    bDeferRender: true,
-                    bProcessing: true,
-                    dataType: 'json',
-                    contentType: 'application/json; charset=utf-8',
-                    success: function (data) {
-                        GridViewPartial_detalle_op.PerformCallback();
-                        GridViewPartial_orden_pago_dc.PerformCallback();
-
-                    },
-                    error: function (error) {
-                    }
+                $("#Valor_a_pagar").keyup(function () {
+                    armar_diario();
                 });
 
-            };
+                function armar_diario() {
+
+                    var datos = {
+                        IdTipo_op: IdTipo_op.GetValue(),
+                        IdEntidad: IdEntidad.GetValue(),
+                        Valor_a_pagar: $("#Valor_a_pagar").val(),
+                        observacion: $("#observacion").val()
+
+
+                    }
+                    $.ajax({
+                        type: 'POST',
+                        data: JSON.stringify(datos),
+                        url: '@Url.Action("armar_diario", "OrdenPago", new { Area = "CuentasPorPagar" })',
+                        async: false,
+                        bDeferRender: true,
+                        bProcessing: true,
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (data) {
+                            GridViewPartial_detalle_op.PerformCallback();
+                            GridViewPartial_orden_pago_dc.PerformCallback();
+
+                        },
+                        error: function (error) {
+                        }
+                    });
+
+                };
 
 
 

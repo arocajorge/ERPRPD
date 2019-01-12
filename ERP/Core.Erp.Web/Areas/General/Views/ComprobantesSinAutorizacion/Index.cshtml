@@ -26,14 +26,14 @@
    
 
 </script>
-@using (Html.BeginForm())
+@using (Html.BeginForm("Index", "ComprobantesSinAutorizacion",FormMethod.Post,new { @role = "form", @id = "myform" }))
 {
-    <div class="box collapsed-box">
+    <div class="box">
         <div class="box-header with-border">
             <div class="row">
                 <div class="col-md-12">
                     <button type="submit" class="btn btn-primary">Aplicar filtros</button>
-                        <button type="button" class="btn btn-primary" id="btn_guardar" onclick="guardar_aprobacion();">Aprobar</button>
+                        <button type="button" class="btn btn-primary" id="btn_guardar" onclick="guardar_aprobacion();">Autorizar SRI</button>
                 </div>
             </div>
             <div class="box-tools pull-right">
@@ -142,6 +142,7 @@
             success: function (data) {
 
                 $("#myform").submit();
+                GridViewPartial_documentos_pendientes_enviar_sri.UnselectRows();
                 GridViewPartial_documentos_pendientes_enviar_sri.PerformCallback();
 
             },
